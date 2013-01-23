@@ -111,6 +111,29 @@ class DlxAccesser {
                 ));
     }
     
+    public static function getCaptureMonsters()
+    {
+        $response = self::getRequest('top/field/fieldCaptureIndex.php');
+        $html = $response->getBody();
+        
+        $m = array();
+        if (0 === preg_match('/var monsterList = \{(.*)\};/i', $html, $m)) {
+            return false;
+        }
+        $monser_data_json = '{'.$m[1].'}';
+        $monster_data = json_decode($monser_data_json, true);
+        
+        $monsters = array();
+        foreach ($monster_data as $monster_id => $data) {
+            $m = new \app\model\Monster($monster_id);
+            if (isset($data['drop'])) {
+                $m->setBoxDrop($data['drop']);
+            }
+            array_push($monsters, $m);
+        }
+        return $monsters;
+    }
+    
     public static function useMilk()
     {
         //var recoveryItemNum = 50;
