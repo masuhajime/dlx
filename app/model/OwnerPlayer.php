@@ -4,7 +4,9 @@ namespace app\model;
 
 class OwnerPlayer extends Player{
     private $stamina;
-    
+    private $milk_num;
+
+
     private static $instance = null;
 
     public function __construct() {
@@ -12,7 +14,6 @@ class OwnerPlayer extends Player{
     }
     
     /**
-     * 
      * @return \app\model\OwnerPlayer
      */
     public static function getInstance()
@@ -29,8 +30,13 @@ class OwnerPlayer extends Player{
         return $this->stamina;
     }
     
-    public function getField()
+    public function setMilkNum($num)
     {
-        
+        $this->milk_num = $num;
+    }
+    
+    public function useMilk()
+    {
+        \app\helper\DlxAccesser::useMilk();
     }
 }

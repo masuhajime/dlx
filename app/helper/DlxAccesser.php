@@ -33,11 +33,11 @@ class DlxAccesser {
      */
     public static function getStamina()
     {
-        $response = self::postRequest('top/field/checkStamina.php?HTTP_UTIL=1');
+        $response = self::getRequest('top/field/checkStamina.php?HTTP_UTIL=1');
         $json = $response->getBody();
         $j = json_decode($json, true);
         if (is_null($j)) {
-            return false;
+            throw new exception\UnexpectedResponse("fail get stamina");
         }
         return intval($j['stamina']);
     }
@@ -98,5 +98,27 @@ class DlxAccesser {
                     // result = true で全勝利となる
                     'result' => 'true'//なぜか文字列
                 ));
+    }
+    
+    public static function captureMonster(\app\model\Monster $monster)
+    {
+        return self::postRequest('top/field/fieldBattle.php?HTTP_UTIL=1',
+                array(
+                    'mid' => $monster->getId(),
+                    'drop' => 'null',
+                    'result' => 'true',//なぜか文字列
+                    'prob' => '100'
+                ));
+    }
+    
+    public static function useMilk()
+    {
+        //var recoveryItemNum = 50;
+        //http://dragonx.asobism.co.jp/top/field/RecoveryStamina.php?HTTP_UTIL=1
+        //{"error":false,"checkStamina":"10","recoveryItemNum":49}
+        
+        $response = self::getRequest('top/field/RecoveryStamina.php?HTTP_UTIL=1');
+        $json = $response->getBody();
+        
     }
 }

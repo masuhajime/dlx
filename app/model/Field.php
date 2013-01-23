@@ -61,9 +61,13 @@ class Field {
         $html = \app\helper\DlxAccesser::getMapHtml();
         if (false !== strpos($html, 'var monsterList =')) {
             $this->parseMonsters($html);
-        } else {
+            return;
+        } else if (false !== strpos($html, 'var object = [')) {
+            // こっちはフィールドトップ画面
             $this->parseFieldEvents($html);
+            return;
         }
+        throw new \app\helper\exception\UnexpectedResponse("failed to get field/monster");
     }
     
     public function touchMonsterEvent()

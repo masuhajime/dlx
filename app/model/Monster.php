@@ -14,7 +14,9 @@ class Monster {
     }
     
     public function __toString() {
-        return "monster id:{$this->id}, defeated:".($this->defeated?"true":"false");
+        return "monster id:{$this->id}, defeated:"
+        .($this->defeated?"true ":"false")
+        ." drop:".(is_null($this->box_drop)?"null":$this->box_drop);
     }
 
 

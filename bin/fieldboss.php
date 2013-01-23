@@ -14,11 +14,4 @@ $request->addPostFields(array('bid' => '5217742',
 $response = $request->send();
 
 echo $response->getBody();
-// >>> {"type":"User", ...
-//echo $response->getHeader('Content-Length');
-// >>> 792
-//$data = $response->xml();
-//echo $data['type'];
-// >>> User
-
 
