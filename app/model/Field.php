@@ -6,6 +6,8 @@ class Field {
     private $events = array();
     private $monsters = array();
     
+    private $assigned_touch_events = array(FieldEvent::MONSTER);
+    
     private static $instance = null;
     
     private function __construct() {}
@@ -41,7 +43,7 @@ class Field {
         }
         foreach ($this->monsters as $monster) {
            if ($monster->isAlive()) {
-               echo $monster.PHP_EOL;
+               \app\helper\Logger::info($monster->toString());
                $monster->battle();
                return true;
            }
@@ -55,29 +57,32 @@ class Field {
         $this->events = array();
     }
 
-    public function update()
+    public function update($html)
     {
-        $this->init();
-        $html = \app\helper\DlxAccesser::getMapHtml();
-        if (false !== strpos($html, 'var monsterList =')) {
+        if (0 < preg_match('/var monsterList[ \t]*=/', $html)) {
+            // モンスター出現中の画面
             $this->parseMonsters($html);
             return;
-        } else if (false !== strpos($html, 'var object = [')) {
+        } else if (0 < preg_match('/var object[ \t]*=[ \t]*\[/', $html)) {
             // こっちはフィールドトップ画面
+            $this->init();
             $this->parseFieldEvents($html);
             return;
         }
+        \app\helper\Logger::alert("failed to get field/monster", __LINE__, __FILE__);
         throw new \app\helper\exception\UnexpectedResponse("failed to get field/monster");
     }
     
-    public function touchMonsterEvent()
+    public function touchAssignedEvent()
     {
         foreach ($this->events as $event) {
-            echo $event.PHP_EOL;
-            if ($event->isUntouchedMonsterEvent()) {
+            if (!$event->isTouched() 
+                && in_array($event->getEventId(), $this->assigned_touch_events)) {
+                \app\helper\Logger::info($event->toString().' TOUCH');
                 $event->touch();
                 return true;
             }
+            \app\helper\Logger::info($event->toString());
         }
         return false;
     }
@@ -107,16 +112,15 @@ class Field {
     private function parseFieldEvents($html)
     {
         $m = array();
-        if (0 === preg_match('/var object = \[(.*)\];/i', $html, $m)) {
+        if (0 === preg_match('/var object[ \t]*=[ \t]*\[(.*)\];/i', $html, $m)) {
             return false;
         }
         $event_data_json = '['.$m[1].']';
         $event_data = json_decode($event_data_json, true);
         //var_dump($event_data);
         foreach ($event_data as $data) {
-            $e = new FieldEvent($data['objectID'], $data['eventID'], $data['param'],
-                    intval($data['checkFlag']) === 1);
-            array_push($this->events, $e);
+            $fe = FieldEvent::createInstanceFromArray($data);
+            array_push($this->events, $fe);
         }
         //var_dump($this->events);
         return true;
@@ -125,19 +129,23 @@ class Field {
     private function parseMonsters($html)
     {
         $m = array();
-        if (0 === preg_match('/var monsterList = \{(.*)\};/i', $html, $m)) {
+        if (0 === preg_match('/var monsterList[ \t]*=[ \t]*\{(.*)\};/i', $html, $m)) {
             return false;
         }
         $monser_data_json = '{'.$m[1].'}';
         $monster_data = json_decode($monser_data_json, true);
         //var_dump($monster_data);
         foreach ($monster_data as $monster_id => $data) {
-            $m = new Monster($monster_id);
-            $m->setBoxDrop($data['drop']);
+            $m = \app\model\Monster::createInstanceFromArray($data);
             array_push($this->monsters, $m);
         }
         //var_dump($this->monsters);
         return true;
     }
+    
+    /**
+     * タッチするイベントの種類
+     */
+    public function setAssignedTouchEvents(array $event_types) {$this->assigned_touch_events = $event_types;}
 }
 

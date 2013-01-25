@@ -8,6 +8,12 @@ class DlxUrl {
     const URL_CHECK_STAMINA = 'top/field/checkStamina.php?HTTP_UTIL=1';
     const URL_USE_MILK = 'top/field/RecoveryStamina.php?HTTP_UTIL=1';
     
+    // 戦闘状況
+    // http://dragonx.asobism.co.jp/top/battle/checkBattle.php
+    // FP100回復(mypage)
+    // http://dragonx.asobism.co.jp/top/mypage/mypageFP.php
+    
+    
     const URL_SET_DEFAULT = 0;
     const URL_SET_GOLD_EVENT = 1;
     
@@ -17,7 +23,7 @@ class DlxUrl {
     const URL_FIELD_OBJECT_RESET = 3;//次のフィールドへ
     const URL_FIELD_REQUEST_BATTLE = 4;//モンスターとの戦闘/捕獲
     const URL_CAPTURE_LIST = 5;//捕獲済みリストの表示
-    const URL_REQUEST_CAPTURE = 6;//ホッかう済みリストからの捕獲(戦闘)実行
+    const URL_REQUEST_CAPTURE = 6;//捕獲済みリストからの捕獲(戦闘)実行
     
     private static $URL_SET = array(
         self::URL_SET_DEFAULT => array(
@@ -36,7 +42,9 @@ class DlxUrl {
             self::URL_FIELD_OBJECT_RESET => 'top/event/gold/eventFieldObjectReset.php?HTTP_UTIL=1',
             self::URL_FIELD_REQUEST_BATTLE => 'top/event/gold/requestGoldBattleMonster.php?HTTP_UTIL=1',
             self::URL_CAPTURE_LIST => 'top/field/fieldCaptureIndex.php',//めんどいので同じにした
-            self::URL_REQUEST_CAPTURE => 'top/event/gold/requestGoldBattleMonster.php?HTTP_UTIL=1',
+            //self::URL_REQUEST_CAPTURE => 'top/event/gold/requestGoldBattleMonster.php?HTTP_UTIL=1',
+            //なんか動かないのでデフォと同じにしている, 原因は調べてない
+            self::URL_REQUEST_CAPTURE => 'top/field/fieldBattle.php?HTTP_UTIL=1',
         )
     );
     

@@ -6,7 +6,7 @@ class FieldEvent {
     const MONSTER     = 0;
     const BOX         = 1;
     const COIN        = 2;
-    const FP          = 3;//?
+    const FP          = 3;//技ポイント
     const JOBEX       = 4;//熟練度
     const BOSS_NORMAL = 5;//召喚
     
@@ -29,13 +29,31 @@ class FieldEvent {
         $this->touched = $touched;
     }
     
+    public static function createInstanceFromArray(array $data)
+    {
+        if (!isset($data['objectID']) || !isset($data['eventID']) 
+            || !isset($data['param']) || !isset($data['checkFlag'])) {
+            Logger::warning('invalid data', __LINE__, __FILE__);
+            throw new \RuntimeException('field event invalid data array');
+        }
+        $fe = new self($data['objectID'], $data['eventID'], $data['param'], 
+                1 === intval($data['checkFlag']));
+        return $fe;
+    }
+    
     public function __toString() {
-        return "id:{$this->id}, event_id:".
-                sprintf("%7s", self::$EVENT_NAME[$this->event_id]).
-                ", touched:".($this->touched?"true":"false");
+        return "id:{$this->id} ".
+                "event_id:".sprintf("%-7s", self::$EVENT_NAME[$this->event_id])."({$this->event_id})".
+                " touched:".($this->touched?"true ":"false").
+                " param:{$this->param}";
+    }
+    
+    public function toString()
+    {
+        return $this.null;
     }
 
-        public function isUntouchedMonsterEvent()
+    public function isUntouchedMonsterEvent()
     {
         return !$this->touched && $this->event_id === self::MONSTER;
     }
