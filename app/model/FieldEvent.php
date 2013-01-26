@@ -6,11 +6,11 @@ class FieldEvent {
     const MONSTER     = 0;
     const BOX         = 1;
     const COIN        = 2;
-    const FP          = 3;//技ポイント
+    const FP          = 3;//技ポイントの回復
     const JOBEX       = 4;//熟練度
     const BOSS_NORMAL = 5;//召喚
     
-    private static $EVENT_NAME = array('monster', 'box', 'coin', 'fp?', 'jobex', 'boss');
+    private static $EVENT_NAME = array('monster', 'box', 'coin', 'fp', 'jobex', 'boss');
     
     // タッチ位置
     //  0  1
