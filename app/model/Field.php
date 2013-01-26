@@ -23,7 +23,18 @@ class Field {
         return self::$instance;
     }
     
-    public function hasMonster()
+    public function isFieldBossAppear()
+    {
+        foreach ($this->events as $event) {
+            if (!$event->isTouched()
+                && FieldEvent::BOSS_NORMAL === $event->getEventId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public function isMonsterAppear()
     {
         if (0 === count($this->monsters)) {
             return false;
@@ -76,6 +87,12 @@ class Field {
     public function touchAssignedEvent()
     {
         foreach ($this->events as $event) {
+            // 召喚の検証のために確保したいのでここで終わらせる処理
+            /*
+            if (!$event->isTouched() && $event->getEventId() === FieldEvent::BOSS_NORMAL) {
+                \app\helper\Logger::alert($event->toString(), __LINE__, __FILE__);
+                exit;
+            }*/
             if (!$event->isTouched() 
                 && in_array($event->getEventId(), $this->assigned_touch_events)) {
                 \app\helper\Logger::info($event->toString().' TOUCH');
@@ -126,6 +143,7 @@ class Field {
         return true;
         
     }
+    
     private function parseMonsters($html)
     {
         $m = array();
@@ -141,6 +159,18 @@ class Field {
         }
         //var_dump($this->monsters);
         return true;
+    }
+    
+    public function getFieldBoss()
+    {
+        $html = \app\helper\DlxAccesser::getFieldBossHtml();
+        $m = array();
+        if (0 === preg_match('/var bossData[ \t]*=[ \t]*\{(.*)\};/i', $html, $m)) {
+            return false;
+        }
+        $field_boss_data = json_decode('{'.$m[1].'}', true);
+        $fb = FieldBoss::createInstanceFromArray($field_boss_data);
+        return $fb;
     }
     
     /**

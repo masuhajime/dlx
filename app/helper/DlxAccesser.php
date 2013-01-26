@@ -163,6 +163,27 @@ class DlxAccesser {
         Logger::debug(__METHOD__.' url:'.DlxUrl::URL_USE_MILK);
         $response = self::getRequest(DlxUrl::URL_USE_MILK);
         $json = $response->getBody();
-        
+    }
+    
+    public static function fieldBossProcess(\app\model\FieldBoss $boss)
+    {
+        $url = DlxUrl::url(self::$url_set, DlxUrl::URL_FIELD_BOSS_PROCESS);
+        $param = array(
+                    'bid' => $boss->getId(),
+                    'param' => 1,
+                    'result' => 90,//高い値を設定しても変化はなかったはずだが
+                    'continueFlag' => 1,//1でも0でも変化がわからない
+                );
+        Logger::debug(__METHOD__.' url:'.$url.' params:'.  var_export($param, true));
+        return self::postRequest($url, $param);
+        //{"error":false,"dropSummon":0,"result":false}
+    }
+    
+    public static function getFieldBossHtml()
+    {
+        $url = DlxUrl::url(self::$url_set, DlxUrl::URL_FIELD_BOSS);
+        Logger::debug(__METHOD__.' url:'.$url);
+        $response = self::getRequest($url);
+        return $response->getBody();
     }
 }

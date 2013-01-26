@@ -36,10 +36,10 @@ function main()
     while (1) {
         $owner->updateAllInfo();
         sleep(2);
-        if ($field->hasMonster()) {
+        if ($field->isMonsterAppear()) {
             Logger::info('monster appears');
             // battle monster
-            while ($field->hasMonster()) {
+            while ($field->isMonsterAppear()) {
                 $field->battleMonster();
                 sleep(3);
             }
@@ -61,8 +61,11 @@ function main()
                 ." exp:{$owner->getExp()} money:{$owner->getMoney()}"
                 ." wins:{$owner->getMonsterWin()}"
         );
-        if ($stamina === 0) {
+        // もしかすると召喚獣の連続出現に残りスタミナが関係しているのでは?
+        // 2にして様子を見よう -> 牛乳は機能しません^-^
+        if ($stamina <= 3) {
             if (CONFIG_USER::USE_AUTO_MILK 
+             && $stamina === 0
              && 0 < $owner->getMilkNum()
              && CONFIG_USER::USE_AUTO_MILK_BORDER < $owner->getMilkNum()) {
                 Logger::info("using MILK");
@@ -75,8 +78,22 @@ function main()
             }
         }
 
-        if (!$field->hasMonster()) {
+        if (!$field->isMonsterAppear()) {
             //Logger::info('no monster appear');
+            if ($field->isFieldBossAppear()) {
+                Logger::info('field boss appear');
+                while (1) {//連続出現処理
+                    $fb = $field->getFieldBoss();
+                    sleep(5);
+                    if (false === $fb) {
+                        Logger::warning('failed to get boss data', __LINE__, __FILE__);
+                        break;
+                    }
+                    Logger::info($fb->toString());
+                    $fb->process();
+                    sleep(5);
+                }
+            }
             if ($field->touchAssignedEvent()) {
             } else {
                 Logger::info('go to next map');

@@ -12,7 +12,7 @@ class DlxUrl {
     // http://dragonx.asobism.co.jp/top/battle/checkBattle.php
     // FP100回復(mypage)
     // http://dragonx.asobism.co.jp/top/mypage/mypageFP.php
-    
+    // top/field/fieldBoss.php?param=1
     
     const URL_SET_DEFAULT = 0;
     const URL_SET_GOLD_EVENT = 1;
@@ -24,6 +24,8 @@ class DlxUrl {
     const URL_FIELD_REQUEST_BATTLE = 4;//モンスターとの戦闘/捕獲
     const URL_CAPTURE_LIST = 5;//捕獲済みリストの表示
     const URL_REQUEST_CAPTURE = 6;//捕獲済みリストからの捕獲(戦闘)実行
+    const URL_FIELD_BOSS = 7;
+    const URL_FIELD_BOSS_PROCESS = 8;
     
     private static $URL_SET = array(
         self::URL_SET_DEFAULT => array(
@@ -34,6 +36,8 @@ class DlxUrl {
             self::URL_FIELD_REQUEST_BATTLE => 'top/field/fieldBattle.php?HTTP_UTIL=1',
             self::URL_CAPTURE_LIST => 'top/field/fieldCaptureIndex.php',
             self::URL_REQUEST_CAPTURE => 'top/field/fieldBattle.php?HTTP_UTIL=1',//URL_REQUEST_CAPTURE と同じ
+            self::URL_FIELD_BOSS => 'top/field/fieldBoss.php?param=1',
+            self::URL_FIELD_BOSS_PROCESS => 'top/field/fieldBossProcess.php?HTTP_UTIL=1',
         ),
         self::URL_SET_GOLD_EVENT => array(
             self::URL_FIELD_MAP => 'top/event/gold/eventGoldMap.php',
@@ -45,6 +49,8 @@ class DlxUrl {
             //self::URL_REQUEST_CAPTURE => 'top/event/gold/requestGoldBattleMonster.php?HTTP_UTIL=1',
             //なんか動かないのでデフォと同じにしている, 原因は調べてない
             self::URL_REQUEST_CAPTURE => 'top/field/fieldBattle.php?HTTP_UTIL=1',
+            self::URL_FIELD_BOSS => 'top/field/fieldBoss.php?param=1',//調べてない
+            self::URL_FIELD_BOSS_PROCESS => 'top/field/fieldBossProcess.php?HTTP_UTIL=1',//調べてない
         )
     );
     
