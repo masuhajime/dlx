@@ -1,5 +1,4 @@
 vendor
 conf/conf.php
-composer.lock
 composer.phar
 log/*
