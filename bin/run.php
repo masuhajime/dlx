@@ -79,7 +79,7 @@ function main()
             //Logger::info('no monster appear');
             if ($field->touchAssignedEvent()) {
             } else {
-                Logger::info('map reset');
+                Logger::info('go to next map');
                 $field->reset();
             }
         }
