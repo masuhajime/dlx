@@ -14,7 +14,7 @@ Logger::setLogLevel(Logger::LEVEL_INFO);
 $field = app\model\Field::getInstance();
 $field->setAssignedTouchEvents(array(
 \app\model\FieldEvent::MONSTER,
-\app\model\FieldEvent::BOX,
+//\app\model\FieldEvent::BOX,
 //\app\model\FieldEvent::COIN,
 ));
 
@@ -63,7 +63,7 @@ function main()
         );
         // もしかすると召喚獣の連続出現に残りスタミナが関係しているのでは?
         // 2にして様子を見よう -> 牛乳は機能しません^-^
-        if ($stamina <= 3) {
+        if ($stamina <= 0) {
             if (CONFIG_USER::USE_AUTO_MILK 
              && $stamina === 0
              && 0 < $owner->getMilkNum()
