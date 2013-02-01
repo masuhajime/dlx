@@ -177,5 +177,6 @@ class Field {
      * タッチするイベントの種類
      */
     public function setAssignedTouchEvents(array $event_types) {$this->assigned_touch_events = $event_types;}
+    public function addAssignedTouchEvents($event_type) {array_push($this->assigned_touch_events, $event_type);}
 }
 

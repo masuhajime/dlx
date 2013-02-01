@@ -64,6 +64,11 @@ class OwnerPlayer extends Player{
     private function parseCaptureCount($html)
     {
         //var captureCount = '2';
+        if (0 < preg_match('/var captureCount[ \t]*=[ \t]*\'MAX\'/', $html)) {
+            // 捕獲数は最大5
+            $this->capture_count = 5;
+            return;
+        }
         $m = array();
         if (0 === preg_match('/var captureCount[ \t]*=[ \t]*\'([0-9]+)\';/', $html, $m)) {
             Logger::warning('failed to parse capture count', __LINE__, __FILE__);

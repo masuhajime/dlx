@@ -1,26 +1,26 @@
 <?php
 // このファイルをconf.phpとしてコピーしてね♡｡ﾟ.(*♡´◡` 人´◡` ♡*)ﾟ♡ °・
+// ON/OFF(true/false)設定ゎtypeがめんどぅなので1/0にします( ˘ ³˘)♡
 
 class CONFIG_USER
 {
-    // 秘密のIDを入れるのだ(ㆁ × ㆁ)
+    // 秘密のIDぉ入れるのだ(ㆁ × ㆁ)
     const VIEWER_ID = '';
 
     // ♡がこの数値以上の場合ゎ行動する(˃ꌂ˂⁎)
     // 牛乳を使ぅ場合ゎ0にしてね(❛ᴗ❛(❛ᴗ❛♡
-    const FIELD_ACTION_LIFE_BORDER = 3;
+    const LIFE_BORDER_FIELD_ACTION = 3;
     
-    // ▤ ▥ ▦ ♡牛乳♡設定♡▧ ▤ ▥
-    // ON/OFF(true/false)設定はtypeがめんどうなので1/0にします( ˘ ³˘)♡
-    const USE_AUTO_MILK = 1;
-    // (ु*´З`)ू❣牛乳の残り個数がこの数値ィヵなら使わないよっ♪
-    const USE_AUTO_MILK_BORDER = 45;
+    // *★*☆*★*☆*★*♡牛乳♡設定♡*★*☆*★*☆*★*
+    const AUTO_MILK_ENABLE       = 1;//自動で牛乳ぉ使うょ♡
+    // (ु*´З`)ू❣牛乳の残り個数がこの数値ィヵなら使ゎなぃょっ♪
+    const AUTO_MILK_USING_BORDER = 5;
     
-    // ▤ ▥ ▦ ♡フィールド♡設定♡▧ ▤ ▥
-    const FIELD_EVENT_BOX_OPEN = 1;//宝箱を開けるカイ？(๑>◡<๑)
-    const FIELD_EVENT_BOSS     = 1;//(◜▿‾ ≡‾▿◝)召喚獣を捕まえるカイ？(◜▿‾ ≡‾▿◝)
+    // *★*☆*★*☆*★*♡フィールド♡設定♡*★*☆*★*☆*★*
+    const FIELD_EVENT_BOX_OPEN   = 1;//宝箱ぉ獲得するかィ？(๑>◡<๑)
+    const FIELD_EVENT_BOSS       = 1;//召喚獣ぉ捕まえるかィ？(◜▿‾ ≡‾▿◝)
     
-    // (꒡ȯ꒡)＜ここは変更しなくてィィのだよ☆
+    // (꒡ȯ꒡)＜ここゎ変更しなくてィィのだよ☆
     const USER_AGENT = 'Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A403 Safari/8536.25';
 }
 

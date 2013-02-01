@@ -6,17 +6,15 @@ $class_loader->register();
 
 use app\helper\Logger;
 
-//\app\helper\DlxAccesser::setUrlSet(app\helper\DlxUrl::URL_SET_GOLD_EVENT);
 \app\helper\DlxAccesser::setUrlSet(app\helper\DlxUrl::URL_SET_DEFAULT);
 
 //Logger::setLogLevel(Logger::LEVEL_DEBUG);
 Logger::setLogLevel(Logger::LEVEL_INFO);
 $field = app\model\Field::getInstance();
-$field->setAssignedTouchEvents(array(
-\app\model\FieldEvent::MONSTER,
-//\app\model\FieldEvent::BOX,
-//\app\model\FieldEvent::COIN,
-));
+$field->setAssignedTouchEvents(array(\app\model\FieldEvent::MONSTER));
+if (CONFIG_USER::FIELD_EVENT_BOX_OPEN) {
+    $field->addAssignedTouchEvents(CONFIG_USER::FIELD_EVENT_BOX_OPEN);
+}
 
 while (1) {
     try {
@@ -56,18 +54,17 @@ function main()
         }
         $stamina = $owner->getStamina();
         Logger::info(
-                "stamina:{$stamina} milk:{$owner->getMilkNum()}(use border:".CONFIG_USER::USE_AUTO_MILK_BORDER.")"
+                "stamina:{$stamina} milk:{$owner->getMilkNum()}(use border:".CONFIG_USER::AUTO_MILK_USING_BORDER.")"
                 ." capture_count:{$owner->getCaptureCount()}"
                 ." exp:{$owner->getExp()} money:{$owner->getMoney()}"
                 ." wins:{$owner->getMonsterWin()}"
         );
-        // もしかすると召喚獣の連続出現に残りスタミナが関係しているのでは?
-        // 2にして様子を見よう -> 牛乳は機能しません^-^
-        if ($stamina <= 0) {
-            if (CONFIG_USER::USE_AUTO_MILK 
+
+        if ($stamina <= CONFIG_USER::LIFE_BORDER_FIELD_ACTION) {
+            if (CONFIG_USER::AUTO_MILK_ENABLE
              && $stamina === 0
              && 0 < $owner->getMilkNum()
-             && CONFIG_USER::USE_AUTO_MILK_BORDER < $owner->getMilkNum()) {
+             && CONFIG_USER::AUTO_MILK_USING_BORDER < $owner->getMilkNum()) {
                 Logger::info("using MILK");
                 $owner->useMilk(); sleep(1);
                 $stamina = $owner->getStamina(); sleep(1);
@@ -79,8 +76,8 @@ function main()
         }
 
         if (!$field->isMonsterAppear()) {
-            //Logger::info('no monster appear');
-            if ($field->isFieldBossAppear()) {
+            // 召喚獣関連の処理
+            if (CONFIG_USER::FIELD_EVENT_BOSS && $field->isFieldBossAppear()) {
                 Logger::info('field boss appear');
                 while (1) {//連続出現処理
                     $fb = $field->getFieldBoss();
