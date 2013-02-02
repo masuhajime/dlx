@@ -36,7 +36,7 @@ class DlxUrl {
             self::URL_FIELD_REQUEST_BATTLE => 'top/field/fieldBattle.php?HTTP_UTIL=1',
             self::URL_CAPTURE_LIST => 'top/field/fieldCaptureIndex.php',
             self::URL_REQUEST_CAPTURE => 'top/field/fieldBattle.php?HTTP_UTIL=1',//URL_REQUEST_CAPTURE と同じ
-            self::URL_FIELD_BOSS => 'top/field/fieldBoss.php?param=1',
+            self::URL_FIELD_BOSS => 'top/field/fieldBoss.php?param=1',// param=1が通常で param=0がフィールドチェンジかも
             self::URL_FIELD_BOSS_PROCESS => 'top/field/fieldBossProcess.php?HTTP_UTIL=1',
         ),
         self::URL_SET_GOLD_EVENT => array(

@@ -42,6 +42,7 @@ function main()
                 sleep(3);
             }
         }
+        // ぬぼぼ捕獲処理
         if (2 < $owner->getCaptureCount()) {
             Logger::info("capture start (count:{$owner->getCaptureCount()})");
             $nubobos = \app\helper\DlxAccesser::getCaptureMonsters();
@@ -83,7 +84,8 @@ function main()
                     $fb = $field->getFieldBoss();
                     sleep(5);
                     if (false === $fb) {
-                        Logger::warning('failed to get boss data', __LINE__, __FILE__);
+                        Logger::info('field boss disappeared');
+                        $field->setFieldBossEventAsTouched();
                         break;
                     }
                     Logger::info($fb->toString());

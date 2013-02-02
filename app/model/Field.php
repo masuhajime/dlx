@@ -105,20 +105,17 @@ class Field {
     }
     
     /**
-     * 全てのモンスターと戦闘し、次のマップへ進めるかどうか
-     * @return bool
+     * フィールドに出現するボスは仕組み上タッチ処理が要らなく
+     * 捕獲実行をした際に減るので通常のタッチ処理とは別になっているので
+     * 外からタッチ済みとできるようにする必要がある
      */
-    public function canReset()
+    public function setFieldBossEventAsTouched()
     {
-        if (0 === count($this->events)) {
-            throw new \RuntimeException("no Field event");
-        }
         foreach ($this->events as $event) {
-            if($event->isUntouchedMonsterEvent) {
-                return false;
+            if (FieldEvent::BOSS_NORMAL === $event->getEventId()) {
+                $event->setTouched(true);
             }
         }
-        return true;
     }
     
     public function reset()
@@ -165,8 +162,11 @@ class Field {
     {
         $html = \app\helper\DlxAccesser::getFieldBossHtml();
         $m = array();
-        if (0 === preg_match('/var bossData[ \t]*=[ \t]*\{(.*)\};/i', $html, $m)) {
+        if (false !== strpos($html, '召喚獣の情報取得に失敗しました')) {
             return false;
+        }
+        if (0 === preg_match('/var bossData[ \t]*=[ \t]*\{(.*)\};/i', $html, $m)) {
+            throw new \app\helper\exception\UnexpectedResponse('unexpect html from field boss page.');
         }
         $field_boss_data = json_decode('{'.$m[1].'}', true);
         $fb = FieldBoss::createInstanceFromArray($field_boss_data);

@@ -16,10 +16,9 @@ class FieldEvent {
     //  0  1
     // 2    3
     //   4
-    private $id;
-    private $event_id;
-    // coinの値や敵の数等
-    private $param;
+    private $id;//画面の位置にあたるid
+    private $event_id;//イベントの種類
+    private $param;// coinの値や敵の数等
     private $touched;//実行済みのイベントか
     
     public function __construct($id, $event_id, $param, $touched) {
@@ -68,4 +67,5 @@ class FieldEvent {
     public function getEventId(){return $this->event_id;}
     public function getParam(){return $this->param;}
     public function isTouched(){return $this->touched;}
+    public function setTouched($bool){$this->touched = $bool;}
 }
