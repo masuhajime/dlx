@@ -10,11 +10,7 @@ use app\helper\Logger;
 
 //Logger::setLogLevel(Logger::LEVEL_DEBUG);
 Logger::setLogLevel(Logger::LEVEL_INFO);
-$field = app\model\Field::getInstance();
-$field->setAssignedTouchEvents(array(\app\model\FieldEvent::MONSTER));
-if (CONFIG_USER::FIELD_EVENT_BOX_OPEN) {
-    $field->addAssignedTouchEvents(CONFIG_USER::FIELD_EVENT_BOX_OPEN);
-}
+
 
 while (1) {
     try {
@@ -29,26 +25,26 @@ while (1) {
 
 function main()
 {
-    $field = app\model\Field::getInstance();
-    $owner = \app\model\OwnerPlayer::getInstance();
+    $owner = new \app\model\PlayerHandling(CONFIG_USER::VIEWER_ID);
     while (1) {
         $owner->updateAllInfo();
+        $field = $owner->getField();
         sleep(2);
         if ($field->isMonsterAppear()) {
             Logger::info('monster appears');
             // battle monster
             while ($field->isMonsterAppear()) {
-                $field->battleMonster();
+                $owner->battleMonster();
                 sleep(3);
             }
         }
         // ぬぼぼ捕獲処理
         if (2 < $owner->getCaptureCount()) {
             Logger::info("capture start (count:{$owner->getCaptureCount()})");
-            $nubobos = \app\helper\DlxAccesser::getCaptureMonsters();
+            $nubobos = $owner->getCapturedMonsters();
             foreach ($nubobos as $nubo) {
                 Logger::info('capture: '.$nubo->toString());
-                \app\helper\DlxAccesser::captureMonster($nubo);
+                \app\helper\DlxAccesser::captureMonster($owner->getViewerData(), $nubo);
                 sleep(3);
             }
             $owner->setCaptureCount(0);
@@ -93,10 +89,10 @@ function main()
                     sleep(5);
                 }
             }
-            if ($field->touchAssignedEvent()) {
+            if ($owner->touchAssignedEvent()) {
             } else {
                 Logger::info('go to next map');
-                $field->reset();
+                $owner->fieldReset();
             }
         }
         sleep(3);

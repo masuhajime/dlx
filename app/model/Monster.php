@@ -53,10 +53,10 @@ class Monster {
         return !$this->defeated;
     }
     
-    public function battle()
+    public function battle(PlayerHandling $player)
     {
         $this->defeated = true;
-        return \app\helper\DlxAccesser::battleMonster($this);
+        return \app\helper\DlxAccesser::battleMonster($player->getViewerData(), $this);
     }
     
     public function getId() {return $this->id;}

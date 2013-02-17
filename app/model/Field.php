@@ -8,21 +8,6 @@ class Field {
     
     private $assigned_touch_events = array(FieldEvent::MONSTER);
     
-    private static $instance = null;
-    
-    private function __construct() {}
-    
-    /**
-     * @return \app\model\Field
-     */
-    public static function getInstance()
-    {
-        if (is_null(self::$instance)) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
-    
     public function isFieldBossAppear()
     {
         foreach ($this->events as $event) {
@@ -47,7 +32,7 @@ class Field {
         return false;
     }
     
-    public function battleMonster()
+    public function battleMonster(PlayerHandling $player)
     {
         if (0 === count($this->monsters)) {
             return false;
@@ -55,7 +40,7 @@ class Field {
         foreach ($this->monsters as $monster) {
            if ($monster->isAlive()) {
                \app\helper\Logger::info($monster->toString());
-               $monster->battle();
+               $monster->battle($player);
                return true;
            }
         }
@@ -84,7 +69,7 @@ class Field {
         throw new \app\helper\exception\UnexpectedResponse("failed to get field/monster");
     }
     
-    public function touchAssignedEvent()
+    public function touchAssignedEvent(PlayerHandling $player)
     {
         foreach ($this->events as $event) {
             // 召喚の検証のために確保したいのでここで終わらせる処理
@@ -96,7 +81,7 @@ class Field {
             if (!$event->isTouched() 
                 && in_array($event->getEventId(), $this->assigned_touch_events)) {
                 \app\helper\Logger::info($event->toString().' TOUCH');
-                $event->touch();
+                $event->touch($player);
                 return true;
             }
             \app\helper\Logger::info($event->toString());
@@ -118,9 +103,9 @@ class Field {
         }
     }
     
-    public function reset()
+    public function reset(PlayerHandling $player)
     {
-        \app\helper\DlxAccesser::fieldReset();
+        \app\helper\DlxAccesser::fieldReset($player->getViewerData());
     }
 
     private function parseFieldEvents($html)
@@ -158,9 +143,9 @@ class Field {
         return true;
     }
     
-    public function getFieldBoss()
+    public function getFieldBoss(PlayerHandling $player)
     {
-        $html = \app\helper\DlxAccesser::getFieldBossHtml();
+        $html = \app\helper\DlxAccesser::getFieldBossHtml($player->getViewerData());
         $m = array();
         if (false !== strpos($html, '召喚獣の情報取得に失敗しました')) {
             return false;

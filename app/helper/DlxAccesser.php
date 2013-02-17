@@ -16,22 +16,26 @@ class DlxAccesser {
         self::$url_set = $set_num;
     }
 
-    private static function postRequest($page, $post_params = array())
+    private static function postRequest($page, $post_params = array(), $cookie = array())
     {
         $client = new Client(DlxUrl::URL_DRAGONX);
         $request = $client->post($page);
         $request->setHeader('User-Agent', \CONFIG_USER::USER_AGENT);
-        $request->addCookie('viewer_data', \CONFIG_USER::VIEWER_ID);
+        foreach ($cookie as $key => $value) {
+            $request->addCookie($key, $value);
+        }
         $request->addPostFields($post_params);
         return $request->send();
     }
     
-    private static function getRequest($page, $post_params = array())
+    private static function getRequest($page, $post_params = array(), $cookie = array())
     {
         $client = new Client(DlxUrl::URL_DRAGONX);
         $request = $client->get($page);
         $request->setHeader('User-Agent', \CONFIG_USER::USER_AGENT);
-        $request->addCookie('viewer_data', \CONFIG_USER::VIEWER_ID);
+        foreach ($cookie as $key => $value) {
+            $request->addCookie($key, $value);
+        }
         //$request->addPostFields($post_params); TODO:
         return $request->send();
     }
@@ -39,9 +43,10 @@ class DlxAccesser {
     /**
      * @return int/false
      */
-    public static function getStamina()
+    public static function getStamina($viewer_data)
     {
-        $response = self::getRequest(DlxUrl::URL_CHECK_STAMINA);
+        $cookie = array('viewer_data' => $viewer_data);
+        $response = self::getRequest(DlxUrl::URL_CHECK_STAMINA, array(), $cookie);
         $json = $response->getBody();
         $j = json_decode($json, true);
         if (is_null($j)) {
@@ -50,7 +55,7 @@ class DlxAccesser {
         return intval($j['stamina']);
     }
     
-    public static function touchFieldEvent(\app\model\FieldEvent $field)
+    public static function touchFieldEvent($viewer_data, \app\model\FieldEvent $field)
     {
         $url = DlxUrl::url(self::$url_set, DlxUrl::URL_FIELD_EVENT_TOUCH);
         $param = array(
@@ -58,8 +63,9 @@ class DlxAccesser {
                     'status' => $field->getParam(),
                     'obj' => $field->getId(),
                 );
+        $cookie = array('viewer_data' => $viewer_data);
         Logger::debug(__METHOD__.' url:'.$url.' params:'.  var_export($param, true));
-        $response = self::postRequest($url, $param);
+        $response = self::postRequest($url, $param, $cookie);
         // 返り値をみたほうがいいが...
         return true;
     }
@@ -68,14 +74,14 @@ class DlxAccesser {
      * なぜかリダイレクトが正しいURLにリダイレクトしないので
      * @return string html
      */
-    public static function getMapHtml()
+    public static function getMapHtml($viewer_data)
     {
         $client = new Client(DlxUrl::URL_DRAGONX);
         $url_map = DlxUrl::url(self::$url_set, DlxUrl::URL_FIELD_MAP);
         Logger::debug(__METHOD__.' url:'.$url_map);
         $request = $client->get($url_map);
         $request->setHeader('User-Agent', \CONFIG_USER::USER_AGENT);
-        $request->addCookie('viewer_data', \CONFIG_USER::VIEWER_ID);
+        $request->addCookie('viewer_data', $viewer_data);
         $request->getParams()->set('redirect.disable', true);
         $response = $request->send();
         if (!$response->isRedirect()) {
@@ -85,25 +91,25 @@ class DlxAccesser {
         Logger::debug(__METHOD__.' url:'.$url_index);
         $request = $client->get($url_index);
         $request->setHeader('User-Agent', \CONFIG_USER::USER_AGENT);
-        $request->addCookie('viewer_data', \CONFIG_USER::VIEWER_ID);
+        $request->addCookie('viewer_data', $viewer_data);
         $request->getParams()->set('redirect.disable', true);
         $response = $request->send();
         return array('INDEX', $response->getBody());
     }
     
-    public static function fieldReset()
+    public static function fieldReset($viewer_data)
     {
         $client = new Client(DlxUrl::URL_DRAGONX);
         $url = DlxUrl::url(self::$url_set, DlxUrl::URL_FIELD_OBJECT_RESET);
         Logger::debug(__METHOD__.' url:'.$url);
         $request = $client->post($url);
         $request->setHeader('User-Agent', \CONFIG_USER::USER_AGENT);
-        $request->addCookie('viewer_data', \CONFIG_USER::VIEWER_ID);
+        $request->addCookie('viewer_data', $viewer_data);
         $request->getParams()->set('redirect.disable', true);
         $response = $request->send();
     }
     
-    public static function battleMonster(\app\model\Monster $monster)
+    public static function battleMonster($viewer_data, \app\model\Monster $monster)
     {
         $url = DlxUrl::url(self::$url_set, DlxUrl::URL_FIELD_REQUEST_BATTLE);
         $param = array(
@@ -112,11 +118,12 @@ class DlxAccesser {
                     // result = true で全勝利となる
                     'result' => 'true'//なぜか文字列
                 );
+        $cookie = array('viewer_data' => $viewer_data);
         Logger::debug(__METHOD__.' url:'.$url.' params:'.  var_export($param, true));
-        return self::postRequest($url, $param);
+        return self::postRequest($url, $param, $cookie);
     }
     
-    public static function captureMonster(\app\model\Monster $monster)
+    public static function captureMonster($viewer_data, \app\model\Monster $monster)
     {
         $url = DlxUrl::url(self::$url_set, DlxUrl::URL_REQUEST_CAPTURE);
         $param = array(
@@ -125,18 +132,22 @@ class DlxAccesser {
                     'result' => 'true',//なぜか文字列
                     'prob' => '100'
                 );
+        $cookie = array('viewer_data' => $viewer_data);
         Logger::debug(__METHOD__.' url:'.$url.' params:'.  var_export($param, true));
-        return self::postRequest($url, $param);
+        return self::postRequest($url, $param, $cookie);
     }
     
     /**
      * 捕獲済みリストの取得
      * @return boolean|array
      */
-    public static function getCaptureMonsters()
+    public static function getCaptureMonsters($viewer_data)
     {
+        $cookie = array('viewer_data' => $viewer_data);
         $response = self::getRequest(
-                DlxUrl::url(self::$url_set, DlxUrl::URL_CAPTURE_LIST)
+                DlxUrl::url(self::$url_set, DlxUrl::URL_CAPTURE_LIST),
+                array(),
+                $cookie
                 );
         $html = $response->getBody();
         
@@ -155,17 +166,18 @@ class DlxAccesser {
         return $monsters;
     }
     
-    public static function useMilk()
+    public static function useMilk($viewer_data)
     {
         //var recoveryItemNum = 50;
         //http://dragonx.asobism.co.jp/top/field/RecoveryStamina.php?HTTP_UTIL=1
         //{"error":false,"checkStamina":"10","recoveryItemNum":49}
+        $cookie = array('viewer_data' => $viewer_data);
         Logger::debug(__METHOD__.' url:'.DlxUrl::URL_USE_MILK);
-        $response = self::getRequest(DlxUrl::URL_USE_MILK);
+        $response = self::getRequest(DlxUrl::URL_USE_MILK, array(), $cookie);
         $json = $response->getBody();
     }
     
-    public static function fieldBossProcess(\app\model\FieldBoss $boss)
+    public static function fieldBossProcess($viewer_data, \app\model\FieldBoss $boss)
     {
         $url = DlxUrl::url(self::$url_set, DlxUrl::URL_FIELD_BOSS_PROCESS);
         $param = array(
@@ -175,15 +187,17 @@ class DlxAccesser {
                     'continueFlag' => 1,//1でも0でも変化がわからない
                 );
         Logger::debug(__METHOD__.' url:'.$url.' params:'.  var_export($param, true));
-        return self::postRequest($url, $param);
+        $cookie = array('viewer_data' => $viewer_data);
+        return self::postRequest($url, $param, $cookie);
         //{"error":false,"dropSummon":0,"result":false}
     }
     
-    public static function getFieldBossHtml()
+    public static function getFieldBossHtml($viewer_data)
     {
         $url = DlxUrl::url(self::$url_set, DlxUrl::URL_FIELD_BOSS);
         Logger::debug(__METHOD__.' url:'.$url);
-        $response = self::getRequest($url);
+        $cookie = array('viewer_data' => $viewer_data);
+        $response = self::getRequest($url, array(), $cookie);
         return $response->getBody();
     }
 }

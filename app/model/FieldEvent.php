@@ -57,10 +57,10 @@ class FieldEvent {
         return !$this->touched && $this->event_id === self::MONSTER;
     }
     
-    public function touch()
+    public function touch(PlayerHandling $player)
     {
         $this->touched = true;
-        return \app\helper\DlxAccesser::touchFieldEvent($this);
+        return \app\helper\DlxAccesser::touchFieldEvent($player->getViewerData(), $this);
     }
     
     public function getId(){return $this->id;}
