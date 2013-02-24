@@ -36,9 +36,9 @@ class FieldBoss {
     
     public function toString() {return $this.null;}
     
-    public function process()
+    public function process(PlayerHandling $player)
     {
-        \app\helper\DlxAccesser::fieldBossProcess($this);
+        \app\helper\DlxAccesser::fieldBossProcess($player->getViewerData(), $this);
     }
     
     public function getId() {return $this->id;}
