@@ -2,3 +2,4 @@ vendor
 conf/conf.php
 composer.phar
 log/*
+data/*
