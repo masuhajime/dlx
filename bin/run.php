@@ -77,7 +77,7 @@ function main()
             if (CONFIG_USER::FIELD_EVENT_BOSS && $field->isFieldBossAppear()) {
                 Logger::info('field boss appear');
                 while (1) {//連続出現処理
-                    $fb = $field->getFieldBoss();
+                    $fb = $field->getFieldBoss($owner);
                     sleep(5);
                     if (false === $fb) {
                         Logger::info('field boss disappeared');
@@ -85,7 +85,7 @@ function main()
                         break;
                     }
                     Logger::info($fb->toString());
-                    $fb->process();
+                    $fb->process($owner);
                     sleep(5);
                 }
             }
