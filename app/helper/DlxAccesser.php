@@ -200,4 +200,24 @@ class DlxAccesser {
         $response = self::getRequest($url, array(), $cookie);
         return $response->getBody();
     }
+    
+    public static function talkToUser(\app\model\PlayerHandling $from, \app\model\Player $to, $isFP, $message = "")
+    {
+        $url = DlxUrl::URL_TALK;
+        Logger::debug(__METHOD__.' url:'.$url);
+        $cookie = array('viewer_data' => $from->getViewerData());
+        $param = array(
+            "uid" => $from->getId(),
+            "oid" => $to->getId(),
+            "isFP" => $isFP?"1":"0",
+            "message" => $message
+        );
+        $response = self::postRequest($url, $param, $cookie);
+        return $response;
+    }
+    
+    public static function doBattleCommand()
+    {
+        
+    }
 }

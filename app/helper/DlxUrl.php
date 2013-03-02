@@ -7,6 +7,8 @@ class DlxUrl {
     const URL_DRAGONX = 'http://dragonx.asobism.co.jp/';
     const URL_CHECK_STAMINA = 'top/field/checkStamina.php?HTTP_UTIL=1';
     const URL_USE_MILK = 'top/field/RecoveryStamina.php?HTTP_UTIL=1';
+    const URL_BATTLE_COMMAND = 'top/battle/battleCommandProcess.php?HTTP_UTIL=1';
+    const URL_TALK = 'top/talk/talkProcess.php?HTTP_UTIL=1';//個人に語る
     
     // 戦闘状況
     // http://dragonx.asobism.co.jp/top/battle/checkBattle.php

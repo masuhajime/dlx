@@ -21,6 +21,7 @@ class PlayerHandling extends Player{
 
     public function __construct($viewer_data) {
         $this->viewer_data = $viewer_data;
+        $this->id = self::getIdFromViewerData($viewer_data);
         $this->field = new Field();
         // もっと適切な場所に移動したいなー
         $this->field->setAssignedTouchEvents(array(\app\model\FieldEvent::MONSTER));
@@ -28,6 +29,18 @@ class PlayerHandling extends Player{
             $this->field->addAssignedTouchEvents(CONFIG_USER::FIELD_EVENT_BOX_OPEN);
         }
         parent::__construct();
+    }
+    
+    static private function getIdFromViewerData($viewer_data)
+    {
+        $separates = array('%2C', ',');
+        foreach ($separates as $sepa) {
+            if (false !== strpos($viewer_data, $sepa)) {
+                list($id) = explode($sepa, $viewer_data);
+                return $id;
+            }
+        }
+        throw new \RuntimeException('invalid viewer_data: '.$viewer_data);
     }
     
     public function getStamina()
