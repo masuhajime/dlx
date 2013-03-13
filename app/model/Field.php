@@ -79,7 +79,11 @@ class Field {
                 exit;
             }*/
             if (!$event->isTouched() 
-                && in_array($event->getEventId(), $this->assigned_touch_events)) {
+                && (
+                    in_array($event->getEventId(), $this->assigned_touch_events)
+                    || $event->isSpecialEvent()
+                    )
+            ) {
                 \app\helper\Logger::info($event->toString().' TOUCH');
                 $event->touch($player);
                 return true;

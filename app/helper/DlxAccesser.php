@@ -220,4 +220,37 @@ class DlxAccesser {
     {
         
     }
+    
+    public static function getEventMagicMachineAppTutorial($viewer_data, $id)
+    {
+        $url = "top/event/magicMachine/magicMachineAppTutorial.php?id={$id}";
+        Logger::debug(__METHOD__.' url:'.$url);
+        $cookie = array('viewer_data' => $viewer_data);
+        $response = self::getRequest($url, array(), $cookie);
+        return $response->getBody();
+    }
+    
+    public static function getEventMagicMachineApp($viewer_data, $id)
+    {
+        $url = "top/event/magicMachine/magicMachineApp.php?id={$id}";
+        Logger::debug(__METHOD__.' url:'.$url);
+        $cookie = array('viewer_data' => $viewer_data);
+        $response = self::getRequest($url, array(), $cookie);
+        return $response->getBody();
+    }
+    
+    public static function getEventMagicMachineWriteResult($viewer_data, \app\model\PlayerHandling $player, $objid)
+    {
+        $url = "top/event/magicMachine/magicMachineWriteResult.php";
+        Logger::debug(__METHOD__.' url:'.$url);
+        $cookie = array('viewer_data' => $viewer_data);
+        $param = array(
+            "uid" => $player->getId(),
+            "objid" => $objid,
+            "score" => 4,
+            "gage" => 0,
+        );
+        $response = self::postRequest($url, $param, $cookie);
+        return $response;
+    }
 }

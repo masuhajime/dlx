@@ -26,8 +26,9 @@ class PlayerHandling extends Player{
         // もっと適切な場所に移動したいなー
         $this->field->setAssignedTouchEvents(array(\app\model\FieldEvent::MONSTER));
         if (\CONFIG_USER::FIELD_EVENT_BOX_OPEN) {
-            $this->field->addAssignedTouchEvents(\CONFIG_USER::FIELD_EVENT_BOX_OPEN);
+            $this->field->addAssignedTouchEvents(FieldEvent::BOX);
         }
+        $this->field->addAssignedTouchEvents(FieldEvent::JOBEX);
         parent::__construct();
     }
     

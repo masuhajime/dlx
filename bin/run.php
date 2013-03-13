@@ -7,6 +7,7 @@ $class_loader->register();
 use app\helper\Logger;
 
 \app\helper\DlxAccesser::setUrlSet(app\helper\DlxUrl::URL_SET_DEFAULT);
+//\app\helper\DlxAccesser::setUrlSet(app\helper\DlxUrl::URL_SET_MAGIC_MACHINE);
 
 //Logger::setLogLevel(Logger::LEVEL_DEBUG);
 Logger::setLogLevel(Logger::LEVEL_INFO);
