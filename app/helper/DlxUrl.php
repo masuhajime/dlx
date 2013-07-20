@@ -9,9 +9,13 @@ class DlxUrl {
     const URL_USE_MILK = 'top/field/RecoveryStamina.php?HTTP_UTIL=1';
     const URL_BATTLE_COMMAND = 'top/battle/battleCommandProcess.php?HTTP_UTIL=1';
     const URL_TALK = 'top/talk/talkProcess.php?HTTP_UTIL=1';//個人に語る
+    const URL_CHECK_BATTLE = 'top/battle/checkBattle.php';
+    const URL_HEADER_STATUS = 'top/header/checkHeaderStatus.php?HTTP_UTIL=1';//バトル中か否か、現在時刻、お守り中かどうか等
+    const URL_TALK_LIST = 'top/talk/talkListLoadProcess.php?HTTP_UTIL=1';
+    const URL_PLAYER_PROFILE = 'top/profile/profileIndex.php?oid=';
+    const URL_BATTLE_HISTORY = 'top/battle/battleHistory.php';
+    const URL_TEAM_INFO = 'top/team/teamIndex.php';
     
-    // 戦闘状況
-    // http://dragonx.asobism.co.jp/top/battle/checkBattle.php
     // FP100回復(mypage)
     // http://dragonx.asobism.co.jp/top/mypage/mypageFP.php
     // top/field/fieldBoss.php?param=1

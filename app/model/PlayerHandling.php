@@ -50,6 +50,52 @@ class PlayerHandling extends Player{
         return $this->stamina;
     }
     
+    public function battleCommand($command_num)
+    {
+        \app\helper\DlxAccesser::doBattleCommand($this->getViewerData(), $command_num);
+    }
+    
+    /**
+     * 
+     * @return \app\model\LeagueBattle\BattleHistory
+     * @throws \RuntimeException
+     */
+    public function getBattleHistory($team_no, $time = null)
+    {
+        if (is_null($time)) {
+            $time = time();
+        }
+        $html = \app\helper\DlxAccesser::getBattleHistory($this->viewer_data, $team_no, $time);
+        // 履歴がない場合*
+        // function getDefaultHistory() {	return false; }
+        $regexp_false = "[ \t]*function[ \t]+getDefaultHistory\(\)[ \t]+\{[ \t]+return[ \t]+false;[ \t]+\}";
+        if (0 < preg_match("/{$regexp_false}/", $html)) {
+            return LeagueBattle\BattleHistory::createFronJson(array());
+        }
+        // 履歴がある場合*
+        // function getDefaultHistory() {	return (.*)unt":1}]; }
+        $regexp = "[ \t]*function[ \t]+getDefaultHistory\(\)[ \t]+\{[ \t]+return[ \t]+(\[.*\]);[ \t]+\}";
+        $m = array();
+        if (0 == preg_match("/{$regexp}/", $html, $m)) {
+            throw new \RuntimeException("battle history regexp does not match.");
+        }
+        $data = json_decode("".$m[1]."", true);
+        if (is_null($data)) {
+            throw new \RuntimeException("getHeaderStatus json_decoded is null");
+        }
+        return LeagueBattle\BattleHistory::createFronJson($data);
+    }
+
+    public function getHeaderStatus()
+    {
+        $json_string = \app\helper\DlxAccesser::getHeaderStatus($this->getViewerData());
+        $data = json_decode($json_string, true);
+        if (is_null($data)) {
+            throw new \RuntimeException("getHeaderStatus json_decoded is null");
+        }
+        return new HeaderStatus($data);
+    }
+    
     public function updateAllInfo()
     {
         list($type, $html) = \app\helper\DlxAccesser::getMapHtml($this->viewer_data);
@@ -60,6 +106,16 @@ class PlayerHandling extends Player{
             $this->parseMilkNum($html);
             $this->parseUserData($html);
         }
+    }
+    
+    /**
+     * 
+     * @return \app\model\LeagueBattle\BattleStatus
+     */
+    public function getBattleStatus()
+    {
+        $json_string = \app\helper\DlxAccesser::getBattleStatus($this->getViewerData(), $this);
+        return LeagueBattle\BattleStatus::createFromJson($json_string);
     }
     
     private function parseUserData($html)
@@ -92,6 +148,15 @@ class PlayerHandling extends Player{
         $this->capture_count = intval($m[1]);
     }
     
+    public function getFP()
+    {
+        $html = \app\helper\DlxAccesser::getPlayerProfile($this, $this->getId());
+        if (0 == preg_match("/function getUserFP\(\)[ \t]+\{[ \t]+return[ \t]+\"(\d+)\";[ \t]+\}/", $html, $match)) {
+            throw new \RuntimeException("FP not found at profile page");
+        }
+        return intval($match[1]);
+    }
+    
     private function parseMilkNum($html)
     {
         // parse milk num
@@ -112,7 +177,8 @@ class PlayerHandling extends Player{
     
     public function getCapturedMonsters()
     {
-        return \app\helper\DlxAccesser::getCaptureMonsters($this->viewer_data);
+        $json = \app\helper\DlxAccesser::getCaptureMonsters($this->viewer_data);
+        
     }
     
     public function fieldReset()

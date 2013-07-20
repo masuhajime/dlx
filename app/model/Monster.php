@@ -10,6 +10,7 @@ class Monster {
     
     private $money = null;
     private $exp = null;
+    private $value = null;
     
     public function __construct($id)
     {
@@ -32,6 +33,9 @@ class Monster {
         }
         if (isset($data['money'])) {
             $monster->setMoney($data['money']);
+        }
+        if (isset($data['value'])) {
+            $monster->setValue($data['value']);
         }
         return $monster;
     }
@@ -56,7 +60,7 @@ class Monster {
     public function battle(PlayerHandling $player)
     {
         $this->defeated = true;
-        return \app\helper\DlxAccesser::battleMonster($player->getViewerData(), $this);
+        return \app\helper\DlxAccesser::battleMonster($player, $this);
     }
     
     public function getId() {return $this->id;}
@@ -64,4 +68,7 @@ class Monster {
     public function getBoxDrop() {return $this->box_drop;}    
     public function setMoney($money) {$this->money = $money;}
     public function setExp($exp) {$this->exp = $exp;}
+    
+    public function setValue($v) {$this->value = $v;}
+    public function getValue() {return $this->value;}    
 }
