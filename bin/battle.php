@@ -9,7 +9,7 @@ use app\model\LeagueBattle\BattleCommand;
 //Logger::setLogLevel(Logger::LEVEL_DEBUG);
 Logger::setLogLevel(Logger::LEVEL_INFO);
 //-----------------
-define("OWNER_TEAM", 1161255);
+define("OWNER_TEAM", ***);
 define("FP_INTERVAL_NORMAL_MODE", 60);//SECOND
 define("FP_USE_MAX_IN_BATTLE", 180);
 define("TYPE_TALK_MSG", \app\model\TalkMessage::INVITE);//\app\model\TalkMessage::INVITE / FP
